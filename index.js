@@ -7,7 +7,7 @@ const check = require('./src/checks')
 async function run() {
   try {
     const pr = github.context.payload.pull_request
-    if (pr.title.indexOf('URGENT')) {
+    if (pr.title.indexOf('URGENT') !== -1) {
       core.warning("[URGENT] in title, check skipped!!!")
       return
     }
