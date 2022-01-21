@@ -33,5 +33,5 @@ module.exports = function(pr, checkItems) {
     if (checkItems === "all") {
         checkItems = Object.keys(checkers)
     }
-    return checkItems.map(item => checkers[item](pr))
+    return checkItems.map(item => [item, checkers[item](pr)])
 }

@@ -14,9 +14,9 @@ async function run() {
 
     const checkItems = core.getInput('checkItems') || "all";
     const checkResults = check(pr, checkItems)
-    const failures = checkResults.filter(r => Boolean(r))
+    const failures = checkResults.filter(r => r[1] === false)
     if (failures.length > 0) {
-      core.setFailed("Some items check failed, see detail for more information")
+      core.setFailed("These items check failed: " + failures.map(r => r[0]).join(", "))
     }
   } catch (error) {
     core.setFailed(error.message);
