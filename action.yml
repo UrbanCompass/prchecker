@@ -1,5 +1,5 @@
 name: 'pr-format-check'
 description: 'make sure your PR is acceptable'
 runs:
-  using: 'node17'
+  using: 'node16'
   main: 'dist/index.js'
