@@ -1,13 +1,5 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
-inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
-    required: true
-    default: '1000'
-outputs:
-  time: # output will be available to future steps
-    description: 'The current time after waiting'
+name: 'pr-format-check'
+description: 'make sure your PR is acceptable'
 runs:
-  using: 'node12'
+  using: 'node17'
   main: 'dist/index.js'
