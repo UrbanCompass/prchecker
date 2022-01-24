@@ -11515,7 +11515,7 @@ async function run() {
     }
     const checkResults = check(pr, checkItems)
     checkResults.forEach(cr => {
-      core.info(`Check for ${cr.checkItem ? "successful" : "failure"}: ${cr.message}`)
+      core.info(`Check for ${cr.checkItem} ${cr.success ? "successful" : "failure"}: ${cr.message}`)
     })
 
     const failures = checkResults.filter(r => !r.success)
