@@ -16,7 +16,7 @@ async function run() {
     const checkItems = core.getInput('checkItems') || "all";
     const checkResults = check(pr, checkItems)
     checkResults.forEach(cr => {
-      console.log(`Check for ${cr.checkItem ? "successful" : "failure"}: ${cr.message}`)
+      core.info(`Check for ${cr.checkItem ? "successful" : "failure"}: ${cr.message}`)
     })
 
     const failures = checkResults.filter(r => !r.success)
