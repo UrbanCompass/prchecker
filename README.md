@@ -1,5 +1,9 @@
 # PR Format Checker
 
+This is an GitHub Action, use to ensure your PR format is acceptable. 
+
+if PR didn't pass your check, the merge request will be blocked.
+
 ```
 Put URGENT into PR title to skip this check.
 ```
@@ -24,7 +28,7 @@ edit `.github/workflows/pr-check.yml`
        - uses: sobadgirl/prchecker@main
          with:
            skip-word: "URGENT"  // optional, this is default value
-           check-items: "all"  // optional JSON array string of check items or 'all', default 'all'. example: '["body", "tasks", "xxx"]'
+           check-items: "all"  // optional JSON array string of check items or 'all', default 'all'. example: '["body", "tasks", "xxx"]', all items can found in `src/checks.js`
          env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -42,7 +46,7 @@ run locally: `brew install act`
 
 ## TODO
 - [x] checker function support return more info, not only `true` or `false`
-- [x] custom words for SKIP
+- [x] custom word for SKIP
 - [x] read check items input 
 - [ ] custom failure message from input
 - [ ] changed lines exclude testing
