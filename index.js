@@ -7,16 +7,22 @@ const check = require('./src/checks')
 async function run() {
   try {
     const pr = github.context.payload.pull_request
-    if (pr.title.indexOf('URGENT') !== -1) {
-      core.warning("[URGENT] in title, check skipped!!!")
+    let skipKey = core.getInput("skip-key", {required: false}) || "URGENT"
+    if (pr.title.indexOf(skipKey) !== -1) {
+      core.warning(`[${skipKey}] in title, check skipped!!!`)
       return
     }
 
     const checkItems = core.getInput('checkItems') || "all";
     const checkResults = check(pr, checkItems)
-    const failures = checkResults.filter(r => r[1] === false)
+    checkResults.forEach(cr => {
+      core.info(`Check for ${cr.checkItem ? "successful" : "failure"}: ${cr.message}`)
+    })
+
+    const failures = checkResults.filter(r => !r.success)
+
     if (failures.length > 0) {
-      core.setFailed("These items check failed: " + failures.map(r => r[0]).join(", "))
+      core.setFailed("These items check failed: " + failures.map(r => r.checkItem).join(", "))
     }
   } catch (error) {
     core.setFailed(error.message);
