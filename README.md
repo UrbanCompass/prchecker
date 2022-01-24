@@ -22,6 +22,9 @@ edit `.github/workflows/pr-check.yml`
      runs-on: ubuntu-latest
      steps:
        - uses: sobadgirl/prchecker@main
+         with:
+           skip-word: "URGENT"  // optional, this is default value
+           check-items: "all"  // optional JSON array string of check items or 'all', default 'all'. example: '["body", "tasks", "xxx"]'
          env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
