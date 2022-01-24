@@ -11506,7 +11506,13 @@ async function run() {
       return
     }
 
-    const checkItems = core.getInput('checkItems') || "all";
+    const checkItemStr = core.getInput('checkItems') || "all";
+    let checkItems = null
+    try {
+      checkItems = JSON.parse(checkItemStr)
+    } catch(e) {
+      checkItems = checkItemStr
+    }
     const checkResults = check(pr, checkItems)
     checkResults.forEach(cr => {
       core.info(`Check for ${cr.checkItem ? "successful" : "failure"}: ${cr.message}`)
