@@ -1,16 +1,30 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
+const core = require('@actions/core')
+const github = require('@actions/github')
 const check = require('./src/checks')
-
 
 // most @actions toolkit packages have async methods
 async function run() {
   try {
     const pr = github.context.payload.pull_request
-    let skipKey = core.getInput("skip-key", {required: false}) || "URGENT"
+
+    const skipKey = core.getInput("skip-key", {required: false}) || "URGENT"
     if (pr.title.indexOf(skipKey) !== -1) {
       core.warning(`[${skipKey}] in title, check skipped!!!`)
       return
+    }
+
+    const exemptUsersStr = core.getInput("exempt-users")
+    if (exemptUsersStr) {
+      let exemptUsers = []
+      const ghUserName = pr.user.login
+      /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
+      try {
+        exemptUsers = JSON.parse(exemptUsersStr)
+      } catch (e) {}
+      if (exemptUsers.indexOf(ghUserName) !== -1) {
+        core.warning(`[${ghUserName}] was in exempted list, check skipped!!!`)
+        return
+      }
     }
 
     const checkItemStr = core.getInput('check-items') || "all";
@@ -20,6 +34,7 @@ async function run() {
     } catch(e) {
       checkItems = checkItemStr
     }
+
     const checkResults = check(pr, checkItems)
     checkResults.forEach(cr => {
       core.info(`Check for "${cr.checkItem}" ${cr.success ? "successful" : "failure"}: ${cr.message}`)
