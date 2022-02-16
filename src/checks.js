@@ -100,7 +100,7 @@ let checkers = {
         const success = unCheckedItems.length === 0
         return new CheckResult({
             success: success,
-            message: success ? "passed" : `Exists unchecked items: ${JSON.stringify(unCheckedItems.map(item => item.text))}, please check!`
+            message: success ? "passed" : `Exist unchecked items: ${JSON.stringify(unCheckedItems.map(item => item.text))}, please check!`
         })
     }
 }
