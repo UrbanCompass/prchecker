@@ -8361,26 +8361,32 @@ let checkers = {
         // all tasks in body should be completed
         if (!pr.body) return new CheckResult({success: false, message: "Please leave something in body when start PR."});
         let tokens = marked.lexer(pr.body)
-        tokens = tokens.map((token, index) => token.id = index)
+        tokens = tokens.map((token, index) => {
+            token.id = index
+            return token
+        })
 
         let taskTokenOfAutomatedTesting = null
         let automatedTestingHeadToken = null
-        tokens.forEach(token => {
+        for (let i = 0; i < tokens.length; i++) {
+            const token = tokens[i]
             // find tasks list between AUTOMATED_TESTING_HEADER and next header(section)
-            if (!automatedTestingHeadToken && token.type === "heading" && token.text === AUTOMATED_TESTING_HEADER) {
-                automatedTestingHeadToken = token
+            if (!automatedTestingHeadToken) {
+                if (token.type === "heading" && token.text === AUTOMATED_TESTING_HEADER) {
+                    automatedTestingHeadToken = token
+                }
+                continue
             }
             // when found tasks 
             if (automatedTestingHeadToken && token.type === "list") {
                 taskTokenOfAutomatedTesting = token
-                return
+                break
             }
             // if for loop run to next header, means cloudn't found tasks between headers. 
             if (automatedTestingHeadToken && token.type === "heading" && token.depth <= 3) {
-                return
+                break
             }
-        })
-        console.log(taskTokenOfAutomatedTesting)
+        }
         if (!taskTokenOfAutomatedTesting) {
             return new CheckResult({
                 success: false,
@@ -8390,7 +8396,6 @@ let checkers = {
 
         // checking at least one box checked for Automated testing
         const hasChecked = taskTokenOfAutomatedTesting.items.filter(item => item.task === true).map(item => item.checked).some(Boolean)
-        console.log(hasChecked)
         if (!hasChecked) {
             return new CheckResult({
                 success: false,
@@ -8399,7 +8404,6 @@ let checkers = {
         }
 
         const taskItems = tokens.filter(token => token.type === "list" && token.id !== taskTokenOfAutomatedTesting.id).map(list => list.items).flat()
-        console.log(taskItems)
         const unCheckedItems = taskItems.filter(item => item.task === true).filter(item => item.checked === false)
         const success = unCheckedItems.length === 0
         return new CheckResult({
@@ -8408,7 +8412,6 @@ let checkers = {
         })
     }
 }
-
 
 module.exports = function(pr, checkItems) {
     if (checkItems === "all") {
