@@ -76,6 +76,7 @@ let checkers = {
                 return
             }
         })
+        console.log(taskTokenOfAutomatedTesting)
         if (!taskTokenOfAutomatedTesting) {
             return new CheckResult({
                 success: false,
@@ -85,6 +86,7 @@ let checkers = {
 
         // checking at least one box checked for Automated testing
         const hasChecked = taskTokenOfAutomatedTesting.items.filter(item => item.task === true).map(item => item.checked).some(Boolean)
+        console.log(hasChecked)
         if (!hasChecked) {
             return new CheckResult({
                 success: false,
@@ -93,6 +95,7 @@ let checkers = {
         }
 
         const taskItems = tokens.filter(token => token.type === "list" && token.id !== taskTokenOfAutomatedTesting.id).map(list => list.items).flat()
+        console.log(taskItems)
         const unCheckedItems = taskItems.filter(item => item.task === true).filter(item => item.checked === false)
         const success = unCheckedItems.length === 0
         return new CheckResult({
