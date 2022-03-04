@@ -40,12 +40,18 @@ let checkers = {
     },
     body: pr => {
         // pr body should contains these headers 
+        const newOwnerCheckListHeader = "Mandatory checklist to be completed by PR owner"
+        const oldOwnerCheckListHeader = "Checklist for PR owner"
         const requireHeaders = ["Description", "Work Ticket", "Test Plan",
-        AUTOMATED_TESTING_HEADER, "Screenshots", "Checklist for PR owner", "Monitoring and Rollback Plan"]
+        AUTOMATED_TESTING_HEADER, "Screenshots", newOwnerCheckListHeader, "Monitoring and Rollback Plan"]
         if (!pr.body) return false;
         const tokens = marked.lexer(pr.body)
         const headers = tokens.filter(token => token.type === "heading" && token.depth <= 3).map(token => token.text)
         const headersSet = new Set(headers)
+        if (headersSet.has(oldOwnerCheckListHeader)) {
+            headersSet.delete(oldOwnerCheckListHeader)
+            headersSet.add(newOwnerCheckListHeader)
+        }
         const missedHeaders = requireHeaders.filter(header => !headersSet.has(header))
         const success = missedHeaders.length === 0
         return new CheckResult({
